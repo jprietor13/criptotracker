@@ -1,14 +1,12 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { View, Text } from 'react-native';
 
-class CoinsScreen extends React.Component {
-    render(){
-        return(
-            <View>
-                <Text>Hola mundo</Text>
-            </View>
-        );
-    }
+const CoinsScreen = () => {
+    return(
+        <View>
+            <Text>Hola mundo en Native</Text>
+        </View>
+    );
 }
 
 export default CoinsScreen;
