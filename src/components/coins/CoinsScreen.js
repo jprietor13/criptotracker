@@ -1,12 +1,28 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
 import Http from '../../libs/Http';
+import CoinsItem from './CoinsItem';
 
 class CoinsScreen extends React.Component {
     
+    state = {
+        coins: [],
+        loading: false
+       
+    }
+
     componentDidMount = async () => {
-        const coins = await Http.instance.get("https://api.coinlore.net/api/tickers/");
-        console.log(coins);
+
+        this.setState({
+            loading: true
+        });
+
+        const response = await Http.instance.get("https://api.coinlore.net/api/tickers/");
+        console.log(response);
+        this.setState({
+            coins: response.data,
+            loading: false
+        });
     }
 
     handlePress = () => {
@@ -15,12 +31,18 @@ class CoinsScreen extends React.Component {
     }
 
     render(){
+
+        const { coins, loading } = this.state;
+
         return(
             <View style={styles.container}>
-                <Text style={styles.textTitle}>Coins</Text>
-                <Pressable onPress={this.handlePress} style={styles.btn}>
-                    <Text style={styles.btnText}>Ir a Detalles</Text>
-                </Pressable>
+                {
+                    loading ? <ActivityIndicator size="large" color="#FFF"/> : null
+                }
+                <FlatList 
+                    data={ coins }
+                    renderItem={({ item }) => <CoinsItem props={item}/> }
+                />
             </View>
         );
     }
