@@ -1,11 +1,17 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import Http from '../../libs/Http';
 
 class CoinsScreen extends React.Component {
+    
+    componentDidMount = async () => {
+        const coins = await Http.instance.get("https://api.coinlore.net/api/tickers/");
+        console.log(coins);
+    }
 
     handlePress = () => {
         console.log("Go to details", this.props);
-        this.props.navigation.navigate("CoinDetail");//componente a redirigir
+        this.props.navigation.navigate("CoinDetail")//componente a redirigir
     }
 
     render(){
