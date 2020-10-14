@@ -26,9 +26,8 @@ class CoinsScreen extends React.Component {
         });
     }
 
-    handlePress = () => {
-        console.log("Go to details", this.props);
-        this.props.navigation.navigate("CoinDetail")//componente a redirigir
+    handlePress = (coin) => { //se pasa coin como parametro para traer la data por moneda
+        this.props.navigation.navigate("CoinDetail", { coin })//componente a redirigir
     }
 
     render(){
@@ -42,7 +41,12 @@ class CoinsScreen extends React.Component {
                 }
                 <FlatList 
                     data={ coins }
-                    renderItem={({ item }) => <CoinsItem props={item}/> }
+                    renderItem={({ item }) => 
+                        <CoinsItem 
+                        onPress={() => this.handlePress(item)}
+                        props={item}
+                        /> 
+                    }
                 />
             </View>
         );
