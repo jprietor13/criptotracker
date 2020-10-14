@@ -2,6 +2,7 @@ import React from 'react';
 import { View, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
 import Http from '../../libs/Http';
 import CoinsItem from './CoinsItem';
+import Colors from '../../resources/Colors';
 
 class CoinsScreen extends React.Component {
     
@@ -37,7 +38,7 @@ class CoinsScreen extends React.Component {
         return(
             <View style={styles.container}>
                 {
-                    loading ? <ActivityIndicator size="large" color="#FFF"/> : null
+                    loading ? <ActivityIndicator size="large" color="#FFF" style={styles.indicator}/> : null
                 }
                 <FlatList 
                     data={ coins }
@@ -51,7 +52,10 @@ class CoinsScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "grey",
+        backgroundColor: Colors.charade
+    },
+    indicator: {
+        margin: 10
     },
     textTitle: {
         textAlign: "center",
