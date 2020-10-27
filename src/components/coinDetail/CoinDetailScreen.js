@@ -1,11 +1,14 @@
 import React from 'react';
-import { View, Text,SectionList, Image, StyleSheet } from 'react-native';
+import { View, Text,SectionList, Image, StyleSheet, FlatList } from 'react-native';
 import Colors from '../../resources/Colors';
+import Http from '../../libs/Http';
+import CoinMarketItem from './CoinMarketItem';
 
 class CoinDetailScreen extends React.Component {
 
     state = {
-        coin: {}
+        coin: {},
+        merkets: [] //creamos markets como un array vacio
     }
 
     getSymbolIcon = (name) => {
@@ -34,9 +37,16 @@ class CoinDetailScreen extends React.Component {
         return sections;
     }
 
+    getMarkets = async (coinId) => {
+        const url = `https://api.coinlore.net/api/coin/markets/?id=${coinId}`; //pasamos el coin id
+        const markets = await Http.instance.get(url); //consultamos la libreria HTTP
+        this.setState({ markets }); //seteamos markets de state
+    }
+
     componentDidMount = () => {
         const { coin } = this.props.route.params;
-        this.props.navigation.setOptions({ title: coin.symbol })
+        this.props.navigation.setOptions({ title: coin.symbol });
+        this.getMarkets(coin.id);
         this.setState({
             coin
         })
@@ -44,7 +54,7 @@ class CoinDetailScreen extends React.Component {
 
     render(){
 
-        const { coin } = this.state;
+        const { coin, markets } = this.state;
 
         return(
             <View style={styles.container}>
@@ -52,7 +62,7 @@ class CoinDetailScreen extends React.Component {
                     <Image source={{ uri: this.getSymbolIcon(coin.name) }} style={styles.iconImg}/>
                     <Text style={styles.titleText}>{coin.name}</Text>
                 </View>
-                <SectionList 
+                <SectionList style={styles.section}
                     sections={this.getSections(coin)} 
                     keyExtractor={(item) => item}
                     renderItem={({ item }) =>
@@ -65,6 +75,15 @@ class CoinDetailScreen extends React.Component {
                              <Text style={styles.sectionText}>{section.title}</Text>
                         </View>
                     }
+                />
+
+                <Text style={styles.marketTitle}>Markets</Text>
+
+                <FlatList
+                    style={styles.list}
+                    horizontal={true} 
+                    data={markets}
+                    renderItem={({ item }) => <CoinMarketItem item={item}/>}
                 />
             </View>
         );
@@ -91,6 +110,13 @@ const styles = StyleSheet.create({
        fontWeight: "bold",
        marginLeft: 8,
     },
+    marketTitle: {
+        color: Colors.white,
+        fontSize: 16,
+        marginBottom: 16,
+        marginLeft: 16,
+        fontWeight: 'bold'
+    },  
     sectionHeader: {
         backgroundColor: "rgba(0, 0, 0, 0.2)",
         padding: 8
@@ -102,10 +128,17 @@ const styles = StyleSheet.create({
         color: Colors.white,
         fontSize: 14
     },
+    section: {
+        maxHeight: 220
+    },
     sectionText: {
         color: Colors.white,
         fontSize: 14,
         fontWeight: "bold"
+    },
+    list: {
+        maxHeight: 100,
+        paddingLeft: 16
     }
 })
 
