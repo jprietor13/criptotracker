@@ -19,7 +19,6 @@ class CoinsScreen extends React.Component {
         });
 
         const response = await Http.instance.get("https://api.coinlore.net/api/tickers/");
-        console.log(response);
         this.setState({
             coins: response.data,
             loading: false
@@ -42,10 +41,7 @@ class CoinsScreen extends React.Component {
                 <FlatList 
                     data={ coins }
                     renderItem={({ item }) => 
-                        <CoinsItem 
-                        onPress={() => this.handlePress(item)}
-                        props={item}
-                        /> 
+                        <CoinsItem onPress={() => this.handlePress(item)} props={item} /> 
                     }
                 />
             </View>
