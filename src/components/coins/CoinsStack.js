@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack'; //metodo para crear el stack
 import CoinsScreen from './CoinsScreen';
-import CoinDetailScreen from './CoinDetailScreen';
+import CoinDetailScreen from '../coinDetail/CoinDetailScreen';
 import Colors from '../../resources/Colors';
 
 const Stack = createStackNavigator(); //Se crea el componente Stack en base a createStackNavigator
