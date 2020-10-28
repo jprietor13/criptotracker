@@ -1,5 +1,13 @@
 import React from 'react';
-import { View, Text,SectionList, Image, Pressable, StyleSheet, FlatList } from 'react-native';
+import { 
+    View, 
+    Text,
+    SectionList, 
+    Image, 
+    Pressable, 
+    StyleSheet, 
+    FlatList,
+    Alert } from 'react-native';
 import Colors from '../../resources/Colors';
 import Http from '../../libs/Http';
 import CoinMarketItem from './CoinMarketItem';
@@ -53,27 +61,58 @@ class CoinDetailScreen extends React.Component {
         }
     }
 
-    addFavorite = () => {
+    addFavorite = async () => {
         const coin = JSON.stringify(this.state.coin);
         const key = `favorite-${this.state.coin.id}`;
 
-        const stored = Storage.instance.store(key, coin);
+        const stored = await Storage.instance.store(key, coin);
 
         if(stored) {
             this.setState({ isFavorite: true });
         }
     }
 
-    removeFavorite = () => {
+    //metodo para no perder el estado cuando se añade o se borra un coin
+    getFavorite = async () => {
+        try{
+            const key = `favorite-${this.state.coin.id}`;
+            const favStr = await Storage.instance.get(key);
+            if(favStr !== null){
+                this.setState({ isFavorite: true })
+            }
+        } catch(err) {
+            console.log("Get favorite err", err);
 
+        }
+       
+    }
+
+    removeFavorite = async () => {
+        Alert.alert("Remove favorite", "Are you sure?", [
+            {
+                text: "Cancel",
+                onPress: () => {},
+                style: "cancel"
+            },
+            {
+                text: "Remove",
+                onPress: async () => {
+                    const key = `favorite-${this.state.coin.id}`;
+                    await Storage.instance.remove(key);
+                    this.setState({ isFavorite: false })
+                },
+                style: "destructive"
+            }
+        ]);
+        
     }
 
     componentDidMount = () => {
         const { coin } = this.props.route.params;
         this.props.navigation.setOptions({ title: coin.symbol });
         this.getMarkets(coin.id);
-        this.setState({
-            coin
+        this.setState({ coin }, () => {
+            this.getFavorite();
         })
     }
 
